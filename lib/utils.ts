@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const techIconBaseURL = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
+// const techIconBaseURL = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
+
+const techIconBaseURL = "https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons";
+
 
 const normalizeTechName = (tech: string) => {
   const key = tech.toLowerCase().replace(/\.js$/, "").replace(/\s+/g, "");
