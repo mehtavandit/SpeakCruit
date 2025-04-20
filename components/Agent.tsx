@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { vapi } from '@/lib/vapi.sdk';
 import { interviewer } from '@/constants';
+import { createFeedback } from '@/lib/actions/general.action';
 
 enum CallStatus {
     INACTIVE = 'INACTIVE',
@@ -70,21 +71,34 @@ const Agent = ({userName, userId, type, interviewId, questions} : AgentProps) =>
 
     }, [])
 
-    const handleGenerateFeedback = async(messages:SavedMessage[])=>{
-        console.log('Generate feedback here')
-
-        const {success,id} = {
-            success: true,
-            id: 'feedback-id'
-        }
-
-        if(success && id){
+    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
+        try {
+          const res = await fetch("/api/generate-feedback", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              interviewId,
+              userId,
+              transcript: messages,
+            }),
+          });
+      
+          const { success, feedbackId: id } = await res.json();
+      
+          if (success && id) {
             router.push(`/interview/${interviewId}/feedback`);
-        }else{
-            console.log('Error saving feeback')
-            router.push('/')
+          } else {
+            console.error("Failed to generate feedback");
+            router.push("/");
+          }
+        } catch (error) {
+          console.error("Unexpected error:", error);
+          router.push("/");
         }
-    }
+      };
+      
     
     useEffect(()=>{
         if(callStatus === CallStatus.FINISHED){
@@ -122,7 +136,7 @@ const Agent = ({userName, userId, type, interviewId, questions} : AgentProps) =>
           });
         }
       };
-      
+
     const handleDisconnect = async() =>{
         setCallStatus(CallStatus.FINISHED);
         vapi.stop();
@@ -144,10 +158,10 @@ const Agent = ({userName, userId, type, interviewId, questions} : AgentProps) =>
         </div>
         <div className='card-border'>
             <div className='card-content'>
-                <Image src='/user-avatar.png' alt='user avatar' width={540} height={540} className='rounded-full object-cover size-[120px]'/>
-                <h3>{userName}</h3>
-
+                <Image src='/user.svg' alt='user avatar' width={540} height={540} className='rounded-full object-cover size-[120px]'/>
+                {isSpeaking && <span className='animate-speak'></span>}
             </div>
+            <h3>{userName}</h3>
         </div>
     </div>
 
