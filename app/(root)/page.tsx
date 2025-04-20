@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
+
 const page = async() => {
   const user = await getCurrentUser();
   const [userInterviews,latestInterviews ] = await Promise.all([
@@ -49,6 +50,7 @@ const page = async() => {
               <InterviewCard
                 key={interview.id}
                 userId={user?.id}
+                currentUserId={user?.id!}
                 interviewId={interview.id}
                 role={interview.role}
                 type={interview.type}

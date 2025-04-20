@@ -44,7 +44,8 @@ interface InterviewCardProps {
   role: string;
   type: string;
   techstack: string[];
-  createdAt?: string;
+  createdAt?: string; 
+  currentUserId:string;
 }
 
 interface AgentProps {

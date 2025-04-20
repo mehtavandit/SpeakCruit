@@ -4,11 +4,12 @@ import Image from 'next/image';
 import { cn, getRandomInterviewCover } from "@/lib/utils";
 import { Button } from './ui/button';
 import Link from "next/link";
-import DisplayTechIcon from './DisplayTechIcon';
 import { getFeedbackByInterviewId } from '@/lib/actions/general.action';
+import DeleteInterviewButton from '@/components/DeleteInterviewButton';
+import DisplayTechIcons from './DisplayTechIcon';
 
-const InterviewCard = async({ interviewId, userId, role, type, techstack, createdAt} : InterviewCardProps) => {
-    const feedback = userId && interviewId ? await getFeedbackByInterviewId({interviewId, userId}) : null;
+const InterviewCard = async({ interviewId, userId, role, type, techstack, createdAt, currentUserId} : InterviewCardProps) => {
+    const feedback = userId && interviewId ? await getFeedbackByInterviewId({interviewId, userId}) : null
     const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMM D, YYYY'); 
 
@@ -35,14 +36,22 @@ const InterviewCard = async({ interviewId, userId, role, type, techstack, create
                         {feedback?.finalAssessment || "You haven't taken the interview yet. Take it now to improve your skills"}
                     </p>
             </div>
+            <DeleteInterviewButton
+                interviewId={interviewId}
+                userId={userId}
+                currentUserId={currentUserId}
+            />
             <div className='flex flex-row justify-between'>
-                <DisplayTechIcon techStack = {techstack}/>
+                <DisplayTechIcons techStack = {techstack}/>
+
                 <Button className='btn-primary'>
                     <Link href={feedback ? `/interview/${interviewId}/feedback` : `/interview/${interviewId}`}>
                         {feedback ? 'Check Feedback' : 'View Interview'}
                     </Link>
+                    
                 </Button>
             </div>
+            
 
         </div>
     </div>
