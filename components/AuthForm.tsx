@@ -120,7 +120,7 @@ const AuthForm = ({type} : {type:FormType}) => {
                 <FormField
                     control={form.control}
                     name="password"
-                    label="Name"
+                    label="Password"
                     placeholder="Enter Your Password"
                     type="password"
                   />
